@@ -34,7 +34,7 @@ app.controller('MenuController', ['$scope','menuFactory', function($scope, menuF
 	};
 }]);
 
-app.controller('DishDetailController', ['$scope', '$routeParams', 'menuFactory', function($scope, $routeParams, menuFactory) {
+app.controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory', function($scope, $stateParams, menuFactory) {
 	$scope.frule = '';
 	$scope.predicate = '';
 	$scope.reverse = false;
@@ -56,7 +56,7 @@ app.controller('DishDetailController', ['$scope', '$routeParams', 'menuFactory',
 	};
 
 	// Extract id of dish which the user clicked
-	$scope.dish = menuFactory.getDish(parseInt($routeParams.id,10));
+	$scope.dish = menuFactory.getDish(parseInt($stateParams.id,10));
 }]);
 
 /* Controller for Dist comments after clicking a menu pic */

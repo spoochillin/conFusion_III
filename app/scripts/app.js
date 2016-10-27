@@ -1,27 +1,70 @@
 'use strict';
 
-var app = angular.module('ConfusionApp', ['ngRoute']);
+var app = angular.module('ConfusionApp', ['ui.router']);
 
-//Configure routing; handlers and controllers
-app.config( ['$routeProvider', function($routeProvider) {
+// Set the config for states and URLS
+app.config(['$stateProvider', '$urlRouterProvider', function($stateProvider, $urlRouterProvider) {
+
+	// route for the home page with 3 views header, content and footer
+	$stateProvider.state('app', {
+		url:'/',
+		views: {
+			'header': {
+				templateUrl : 'views/header.html'
+			},
+			'content': {
+				template : '<h1>To be Completed</h1>',
+				controller  : 'IndexController'
+			},
+			'footer': {
+				templateUrl : 'views/footer.html'
+			}
+		}
+	});
+	// route for the aboutus page nested in app state so use @ to specify
+	// the view that is being modified
+	$stateProvider.state('app.aboutus', {
+		url:'aboutus',
+		views: {
+			'content@': {
+				template: '<h1>To be Completed</h1>',
+				controller  : 'AboutController'
+			}
+		}
+	});
 	// route for the contactus page
-	$routeProvider.when('/contactus', {
-		templateUrl : 'contactus.html',
-		controller  : 'ContactController'
+	$stateProvider.state('app.contactus', {
+		url:'contactus',
+		views: {
+			'content@': {
+				templateUrl : 'views/contactus.html',
+				controller  : 'ContactController'
+			}
+		}
 	});
 
 	// route for the menu page
-	$routeProvider.when('/menu', {
-		templateUrl : 'menu.html',
-		controller  : 'MenuController'
+	$stateProvider.state('app.menu', {
+		url: 'menu',
+		views: {
+			'content@': {
+				templateUrl : 'views/menu.html',
+				controller  : 'MenuController'
+			}
+		}
 	});
 
-	// route for the dish details page
-	$routeProvider.when('/menu/:id', {
-		templateUrl : 'dishdetail.html',
-		controller  : 'DishDetailController'
+	// route for the dishdetail page
+	$stateProvider.state('app.dishdetails', {
+		url: 'menu/:id',
+		views: {
+			'content@': {
+				templateUrl : 'views/dishdetail.html',
+				controller  : 'DishDetailController'
+			}
+		}
 	});
-
-	// Default: Change to home later...
-	$routeProvider.otherwise('/contactus');
+	
+	// Default case
+	$urlRouterProvider.otherwise('/');
 }]);
