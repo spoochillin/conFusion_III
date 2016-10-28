@@ -6,9 +6,23 @@ app.controller('MenuController', ['$scope','menuFactory', function($scope, menuF
 	$scope.tab = 1;
 	$scope.filtText = '';
 	$scope.showDetails = false;
+	$scope.showMenu = false;
+	$scope.message = "Loading . . .";
 
 	//Use the menu factory service to get menu data
-	$scope.dishes = menuFactory.getDishes();
+	$scope.dishes = {};
+	
+	menuFactory.getDishes().then(
+		//Success function
+		function(response){
+			$scope.dishes = response.data;
+			$scope.showMenu = true;
+		},
+		//Error function
+		function(response){
+			$scope.message = "Error: "+ response.status+" " + response.statusText;
+		}
+	);
 
 	$scope.select = function(setTab) {
 		$scope.tab = setTab;
@@ -84,8 +98,21 @@ app.controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory',
 		}
 	};
 
+	$scope.showDish = false;
+	$scope.message = "Loading . . .";
 	// Extract id of dish which the user clicked
-	$scope.dish = menuFactory.getDish(parseInt($stateParams.id,10));
+	$scope.dish = {};
+	menuFactory.getDish(parseInt($stateParams.id,10)).then(
+		//Success function
+		function(response){
+			$scope.dish = response.data;
+			$scope.showDish = true;
+		},
+		//Error function
+		function(response){
+			$scope.message = "Error: " + response.status + " " + response.statusText;
+		}
+	);
 }]);
 
 /* Controller for Dist comments after clicking a menu pic */
@@ -104,7 +131,20 @@ app.controller('DishCommentController', ['$scope', function($scope) {
 
 /* Controller for Index page */
 app.controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory',  function($scope, menuFactory, corporateFactory){
-	$scope.dish = menuFactory.getDish(0);
+	$scope.showDish = false;
+	$scope.message = "Loading . . .";
+	$scope.dish = {};
+	menuFactory.getDish(0).then(
+		//Success function
+		function(response){
+			$scope.dish = response.data;
+			$scope.showDish = true;
+		},
+		//Error function
+		function(response){
+			$scope.message = "Error: " + response.status + " " + response.statusText;
+		}
+	);
 	$scope.promotion = menuFactory.getPromotion(0);
 	$scope.chef = corporateFactory.getLeader(3);
 	
