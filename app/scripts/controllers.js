@@ -10,17 +10,13 @@ app.controller('MenuController', ['$scope','menuFactory', function($scope, menuF
 	$scope.message = "Loading . . .";
 
 	//Use the menu factory service to get menu data
-	$scope.dishes = {};
-	
-	menuFactory.getDishes().then(
-		//Success function
+	$scope.dishes = menuFactory.getDishes().query(
 		function(response){
-			$scope.dishes = response.data;
+			$scope.dishes = response;
 			$scope.showMenu = true;
 		},
-		//Error function
 		function(response){
-			$scope.message = "Error: "+ response.status+" " + response.statusText;
+			$scope.message = "Error: " + response.status + " " + response.statusText;
 		}
 	);
 
@@ -101,22 +97,20 @@ app.controller('DishDetailController', ['$scope', '$stateParams', 'menuFactory',
 	$scope.showDish = false;
 	$scope.message = "Loading . . .";
 	// Extract id of dish which the user clicked
-	$scope.dish = {};
-	menuFactory.getDish(parseInt($stateParams.id,10)).then(
-		//Success function
+	$scope.dish = menuFactory.getDishes().get({id:parseInt($stateParams.id,10)}).$promise.then(
 		function(response){
-			$scope.dish = response.data;
+			$scope.dish = response;
 			$scope.showDish = true;
 		},
-		//Error function
 		function(response){
 			$scope.message = "Error: " + response.status + " " + response.statusText;
 		}
 	);
+	
 }]);
 
 /* Controller for Dist comments after clicking a menu pic */
-app.controller('DishCommentController', ['$scope', function($scope) {
+app.controller('DishCommentController', ['$scope', 'menuFactory', function($scope, menuFactory) {
 	//Object to hold the comment from the form
 	$scope.comment = {author:"", rating:5, comment:"", date:""};
 
@@ -124,6 +118,7 @@ app.controller('DishCommentController', ['$scope', function($scope) {
 		$scope.comment.date = new Date().toISOString();
 		//console.log($scope.comment);
 		$scope.dish.comments.push($scope.comment);
+		menuFactory.getDishes().update({id:$scope.dish.id},$scope.dish);
 		$scope.commentForm.$setPristine();
 		$scope.comment = {author:"", rating:5, comment:"", date:""};
 	};
@@ -131,20 +126,18 @@ app.controller('DishCommentController', ['$scope', function($scope) {
 
 /* Controller for Index page */
 app.controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory',  function($scope, menuFactory, corporateFactory){
-	$scope.showDish = false;
+	$scope.showDish = true;
 	$scope.message = "Loading . . .";
-	$scope.dish = {};
-	menuFactory.getDish(0).then(
-		//Success function
+	$scope.dish = menuFactory.getDishes().get({id:0}).$promise.then(
 		function(response){
-			$scope.dish = response.data;
+			$scope.dish = response;
 			$scope.showDish = true;
 		},
-		//Error function
 		function(response){
 			$scope.message = "Error: " + response.status + " " + response.statusText;
 		}
 	);
+	
 	$scope.promotion = menuFactory.getPromotion(0);
 	$scope.chef = corporateFactory.getLeader(3);
 	

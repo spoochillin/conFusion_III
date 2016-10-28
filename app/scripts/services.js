@@ -6,9 +6,7 @@ var app = angular.module('ConfusionApp');
 
 app.constant("baseURL", URL);
 
-app.service('menuFactory', ['$http', 'baseURL', function($http, baseURL){
-	
-	
+app.service('menuFactory', ['$resource', 'baseURL', function($resource, baseURL){
 	
 	var promotions = [
 		{
@@ -23,11 +21,7 @@ app.service('menuFactory', ['$http', 'baseURL', function($http, baseURL){
 	];
 	
 	this.getDishes = function(){
-		return $http.get(baseURL+"dishes");
-	};
-	
-	this.getDish = function(index){
-		return $http.get(baseURL+"dishes/"+index);
+		return $resource(baseURL+"dishes/:id",null,  {'update':{method:'PUT' }});
 	};
 	
 	this.getPromotion = function(index){
